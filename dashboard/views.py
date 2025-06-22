@@ -20,12 +20,8 @@ class CustomerViewset(ModelViewSet):
     serializer_class = CustomerSerializer
     pagination_class = LargeResultPagination
 
-
-
-
-
-
 class OrderAPI(APIView):
+    @rate_limit(max_requests=10,time_window=60*2)
     def get(self,request):
         query_set = Order.objects.all()
         paginator = LargeResultPagination()
@@ -38,6 +34,7 @@ class OrderAPI(APIView):
 
    
 class CustomerAPI(APIView):
+    @rate_limit(max_requests=10,time_window=60*2)
     def get(self,request):
         query_set = Customer.objects.all()
         serializer = CustomerSerializer(query_set,many=True)
@@ -48,6 +45,7 @@ class CustomerAPI(APIView):
         },status.HTTP_200_OK)
     
 class ProductAPI(APIView):
+    @rate_limit(max_requests=10,time_window=60*2)
     def get(self,request):
         query_set = Product.objects.all()
         page_number = request.GET.get('page',1)
@@ -74,3 +72,6 @@ class FileUploadAPI(APIView):
             'Status':'True',
             'Message':'File Uploaded',
         },status.HTTP_201_CREATED)
+    
+
+
