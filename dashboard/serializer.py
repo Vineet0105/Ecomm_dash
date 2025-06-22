@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from .models import *
-
+from django.contrib.auth.models import User
 class FileUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileUpload
@@ -35,3 +35,32 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        if not User.objects.filter(username=data['username']).exists():
+            raise ValidationError("Account doesn't exists")
+        
+        return data
+
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        if User.objects.filter(username=data['username']).exists():
+            raise ValidationError("Account already exists")
+        
+        return data
+    
+    def create(self, validated_data):
+        user  =User.objects.create(username=validated_data['username'])
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
+    

@@ -12,4 +12,6 @@ urlpatterns = [
     path('order/',OrderAPI.as_view()),
     path('customer/',CustomerAPI.as_view()),
     path('product/',ProductAPI.as_view()),
+    path('login/',LoginAPI.as_view()),
+    path('register/',RegisterAPI.as_view()),
 ]
